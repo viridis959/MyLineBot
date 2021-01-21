@@ -14,7 +14,7 @@
 
 ## QRCode
 
-![QRCode](https://github.com./viridis959/MyLineBot/blob/master/rich_menu/QRCode.png?raw=true)
+![](https://github.com./viridis959/MyLineBot/raw/master/rich_menu/QRCode.png?raw=true)
 
 ## License
 The [MIT](http://opensource.org/licenses/MIT) License
