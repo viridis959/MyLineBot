@@ -6,5 +6,4 @@ RUN mkdir /docker
 COPY . /docker
 WORKDIR /docker/
 RUN pip install -r requirements.txt
-EXPOSE 8000
-CMD ["uwsgi", "-i", "uwsgi.ini"]
+CMD python manage.py runserver 0.0.0.0:$PORT
