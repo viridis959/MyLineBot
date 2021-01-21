@@ -15,7 +15,7 @@ def state_judge(state: str, bot_user: str):
     elif state == "interest":    # 顯示興趣內容
         return interest()
     elif state == "interest_image":    # 顯示興趣內容的圖片
-        return send_image("https://github.com/viridis959/MyLineBot/blob/master/interest_image.jpg?raw=true")
+        return send_image("https://github.com/viridis959/MyLineBot/blob/master/rich_menu/interest_image.jpg?raw=true")
 
     elif state == "specialty":    # 切換至專長技能選單
         bot.link_rich_menu_to_user(bot_user, LINE_SPECIALTY_RICH_MENU)

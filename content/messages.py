@@ -14,9 +14,9 @@ def autobiography() -> FlexSendMessage:
     _body_contents2 = body_contents(autobiography_text2)
     body2 = box_component_vert(_body_contents2)
 
-    bubble = bubble_container(header, body1, None)
+    bubble1 = bubble_container(header, body1, None)
     bubble2 = bubble_container(header, body2, None)
-    carousel = CarouselContainer(contents=[bubble, bubble2])
+    carousel = CarouselContainer(contents=[bubble1, bubble2])
 
     return FlexSendMessage(alt_text="自傳", contents=carousel)
 
@@ -40,16 +40,21 @@ def python() -> FlexSendMessage:
     _header_contents = header_contents("Python")
     header = box_component_vert(_header_contents)
 
-    _body_contents = body_contents(python_text)
-    body = box_component_vert(_body_contents)
+    _body_contents1 = body_contents(python_text1)
+    body1 = box_component_vert(_body_contents1)
+
+    _body_contents2 = body_contents(python_text2)
+    body2 = box_component_vert(_body_contents2)
 
     button_component_l = button_component_uri("爬蟲", "https://liff.line.me/1655584156-5MKLa48d")
     button_component_r = button_component_uri("Pytorch", "https://liff.line.me/1655584156-wka7VGdM")
     footer = box_component_hor([button_component_l, button_component_r])
 
-    bubble = bubble_container(header, body, footer)
+    bubble1 = bubble_container(header, body1, footer)
+    bubble2 = bubble_container(header, body2, None)
+    carousel = CarouselContainer(contents=[bubble1, bubble2])
 
-    return FlexSendMessage(alt_text="Python", contents=bubble)
+    return FlexSendMessage(alt_text="Python", contents=carousel)
 
 
 def java() -> FlexSendMessage:
@@ -99,7 +104,7 @@ def intern() -> FlexSendMessage:
     _header_contents = header_contents("實習")
     header = box_component_vert(_header_contents)
 
-    _body_contents = body_contents(project_text)
+    _body_contents = body_contents(intern_text)
     body = box_component_vert(_body_contents)
 
     button_component_l = button_component_postback("Web", "/Web", "intern_web")
