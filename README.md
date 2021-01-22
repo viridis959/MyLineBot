@@ -6,7 +6,7 @@
 > A LINE chat bot based on django
 
 ## Characteristic
-+ Rich menu(run create_rich_menu.py can upload rich menu)
++ Rich menu(run create_rich_menu.py can upload rich menu and modify .env)
 + LIFF
 + django
 + Docker
