@@ -4,7 +4,6 @@ import logging
 
 import pytz
 from linebot import WebhookHandler
-from linebot.models import MessageEvent, TextMessage, PostbackEvent
 
 from MyLineBot.settings import LINE_SECRET
 from .messages import *

@@ -7,6 +7,7 @@ from .base import Base
 
 
 class LifestyleMenu(Base):
+
     def __init__(self, user_id):
         super(LifestyleMenu, self).__init__()
 
@@ -46,6 +47,7 @@ class InterestMessage(Base):
 
 
 class InterestImageMessage(Base):
+
     def __init__(self, user_id):
         super(InterestImageMessage, self).__init__()
 
@@ -64,6 +66,7 @@ class InterestImageMessage(Base):
 
 
 class SpecialtyMenu(Base):
+
     def __init__(self, user_id):
         super(SpecialtyMenu, self).__init__()
 
@@ -118,6 +121,7 @@ class JavascriptMessage(Base):
 
 
 class ExperienceMenu(Base):
+
     def __init__(self, user_id):
         super(ExperienceMenu, self).__init__()
 
@@ -131,6 +135,7 @@ class ExperienceMenu(Base):
 
 
 class ProjectMessage(Base):
+
     def __init__(self, user_id):
         super(ProjectMessage, self).__init__()
 
@@ -145,6 +150,7 @@ class ProjectMessage(Base):
 
 
 class InternMessage(Base):
+
     def __init__(self, user_id):
         super(InternMessage, self).__init__()
 
@@ -159,6 +165,7 @@ class InternMessage(Base):
 
 
 class InternWebMessage(Base):
+
     def __init__(self, user_id):
         super(InternWebMessage, self).__init__()
 
@@ -171,6 +178,7 @@ class InternWebMessage(Base):
 
 
 class InternLineBotMessage(Base):
+
     def __init__(self, user_id):
         super(InternLineBotMessage, self).__init__()
 
@@ -183,6 +191,7 @@ class InternLineBotMessage(Base):
 
 
 class DefaultMenu(Base):
+
     def __init__(self, user_id):
         super(DefaultMenu, self).__init__()
 
@@ -196,6 +205,7 @@ class DefaultMenu(Base):
 
 
 class ContactMeMessage(Base):
+
     def __init__(self, user_id):
         super(ContactMeMessage, self).__init__()
 
