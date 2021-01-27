@@ -9,6 +9,7 @@
 + Rich menu(run create_rich_menu.py can upload rich menu and modify .env)
 + LIFF
 + django
++ I let every state be a object, and use chain of responsibility pattern to judge the state.
 + Docker
 + Deployed on heroku(may wait for 20 seconds for the first click)
 
