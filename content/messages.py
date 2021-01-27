@@ -1,148 +1,225 @@
-from linebot.models import SeparatorComponent, MessageAction, FlexSendMessage, CarouselContainer
+from linebot import LineBotApi
+from linebot.models import *
 
+from MyLineBot.settings import LINE_ACCESS_TOKEN, LINE_LIFESTYLE_RICH_MENU, LINE_EXPERIENCE_RICH_MENU, LINE_DEFAULT_RICH_MENU, LINE_SPECIALTY_RICH_MENU
 from .messages_text import *
-from .messages_utils import *
+from .base import Base
 
 
-def autobiography() -> FlexSendMessage:
-    _header_contents = header_contents("自傳")
-    header = box_component_vert(_header_contents)
+class LifestyleMenu(Base):
+    def __init__(self, user_id):
+        super(LifestyleMenu, self).__init__()
 
-    _body_contents1 = body_contents(autobiography_text1)
-    body1 = box_component_vert(_body_contents1)
+        self.next_cls = AutobiographyMessage
+        self.user_id = user_id
+        self.state = "lifestyle"
 
-    _body_contents2 = body_contents(autobiography_text2)
-    body2 = box_component_vert(_body_contents2)
-
-    bubble1 = bubble_container(header, body1, None)
-    bubble2 = bubble_container(header, body2, None)
-    carousel = CarouselContainer(contents=[bubble1, bubble2])
-
-    return FlexSendMessage(alt_text="自傳", contents=carousel)
+    def as_state_action(self, state):
+        bot = LineBotApi(LINE_ACCESS_TOKEN)
+        bot.link_rich_menu_to_user(self.user_id, LINE_LIFESTYLE_RICH_MENU)
 
 
-def interest() -> FlexSendMessage:
-    _header_contents = header_contents("興趣")
-    header = box_component_vert(_header_contents)
+class AutobiographyMessage(Base):
 
-    _body_contents = body_contents(interest_text)
-    body = box_component_vert(_body_contents)
+    def __init__(self, user_id):
+        super(AutobiographyMessage, self).__init__()
 
-    button_component = button_component_postback("查看相片", "/查看相片", "interest_image")
-    footer = box_component_hor([button_component])
-
-    bubble = bubble_container(header, body, footer)
-
-    return FlexSendMessage(alt_text="興趣", contents=bubble)
+        self.next_cls = InterestMessage
+        self.user_id = user_id
+        self.state = "autobiography"
+        self.header_text = ["自傳", "自傳"]
+        self.body_text = [autobiography_text1, autobiography_text2]
+        self.footer_contents = [None, None]
 
 
-def python() -> FlexSendMessage:
-    _header_contents = header_contents("Python")
-    header = box_component_vert(_header_contents)
+class InterestMessage(Base):
 
-    _body_contents1 = body_contents(python_text1)
-    body1 = box_component_vert(_body_contents1)
+    def __init__(self, user_id):
+        super(InterestMessage, self).__init__()
 
-    _body_contents2 = body_contents(python_text2)
-    body2 = box_component_vert(_body_contents2)
-
-    button_component_l = button_component_uri("爬蟲", "https://liff.line.me/1655584156-5MKLa48d")
-    button_component_r = button_component_uri("Pytorch", "https://liff.line.me/1655584156-wka7VGdM")
-    footer = box_component_hor([button_component_l, button_component_r])
-
-    bubble1 = bubble_container(header, body1, footer)
-    bubble2 = bubble_container(header, body2, None)
-    carousel = CarouselContainer(contents=[bubble1, bubble2])
-
-    return FlexSendMessage(alt_text="Python", contents=carousel)
+        self.next_cls = InterestImageMessage
+        self.user_id = user_id
+        self.state = "interest"
+        self.header_text = ["興趣"]
+        self.body_text = [interest_text]
+        self.footer_contents = [[self._set_button_component_state("查看相片", "/查看相片", "interest_image")]]
 
 
-def java() -> FlexSendMessage:
-    _header_contents = header_contents("Java")
-    header = box_component_vert(_header_contents)
+class InterestImageMessage(Base):
+    def __init__(self, user_id):
+        super(InterestImageMessage, self).__init__()
 
-    _body_contents = body_contents(java_text)
-    body = box_component_vert(_body_contents)
+        self.next_cls = SpecialtyMenu
+        self.user_id = user_id
+        self.state = "interest_image"
 
-    bubble = bubble_container(header, body, None)
-
-    return FlexSendMessage(alt_text="Java", contents=bubble)
-
-
-def javascript() -> FlexSendMessage:
-    _header_contents = header_contents("Javascript")
-    header = box_component_vert(_header_contents)
-
-    _body_contents = body_contents(javascript_text)
-    body = box_component_vert(_body_contents)
-
-    button_component = button_component_uri("Github", "https://liff.line.me/1655584156-RwKNLwB1")
-    footer = box_component_hor([button_component])
-
-    bubble = bubble_container(header, body, footer)
-
-    return FlexSendMessage(alt_text="Python", contents=bubble)
+    def as_state_action(self, state):
+        bubble = BubbleContainer(
+            direction='ltr',
+            size='kilo',
+            hero=ImageComponent(url="https://github.com/viridis959/MyLineBot/blob/master/rich_menu/interest_image.jpg?raw=true",
+                                align='center', size='full', aspect_ratio='1:1')
+        )
+        return FlexSendMessage(alt_text="興趣", contents=bubble)
 
 
-def project() -> FlexSendMessage:
-    _header_contents = header_contents("畢專")
-    header = box_component_vert(_header_contents)
+class SpecialtyMenu(Base):
+    def __init__(self, user_id):
+        super(SpecialtyMenu, self).__init__()
 
-    _body_contents = body_contents(project_text)
-    body = box_component_vert(_body_contents)
+        self.next_cls = PythonMessage
+        self.user_id = user_id
+        self.state = "specialty"
 
-    button_component_l = button_component_uri("Github", "https://liff.line.me/1655584156-LKywQEZb")
-    button_component_r = button_component_uri("影片", "https://liff.line.me/1655584156-2aDQWEGP")
-    footer = box_component_hor([button_component_l, button_component_r])
-
-    bubble = bubble_container(header, body, footer)
-
-    return FlexSendMessage(alt_text="Python", contents=bubble)
+    def as_state_action(self, state):
+        bot = LineBotApi(LINE_ACCESS_TOKEN)
+        bot.link_rich_menu_to_user(self.user_id, LINE_SPECIALTY_RICH_MENU)
 
 
-def intern() -> FlexSendMessage:
-    _header_contents = header_contents("實習")
-    header = box_component_vert(_header_contents)
+class PythonMessage(Base):
 
-    _body_contents = body_contents(intern_text)
-    body = box_component_vert(_body_contents)
+    def __init__(self, user_id):
+        super(PythonMessage, self).__init__()
 
-    button_component_l = button_component_postback("Web", "/Web", "intern_web")
-    button_component_r = button_component_postback("LineBot", "/LineBot", "intern_line_bot")
-    footer = box_component_hor([button_component_l, button_component_r])
-
-    bubble = bubble_container(header, body, footer)
-    print(bubble)
-
-    return FlexSendMessage(alt_text="實習", contents=bubble)
+        self.next_cls = JavaMessage
+        self.user_id = user_id
+        self.state = "python"
+        self.header_text = ["Python", "Python"]
+        self.body_text = [python_text1, python_text2]
+        contents = [self._set_button_component_uri("爬蟲", "https://liff.line.me/1655584156-5MKLa48d"),
+                    self._set_button_component_uri("Pytorch", "https://liff.line.me/1655584156-wka7VGdM")]
+        self.footer_contents = [[BoxComponent(layout="horizontal", contents=contents)], None]
 
 
-def contact_me() -> FlexSendMessage:
-    _header_contents = header_contents("諮詢小幫手")
-    header = box_component_vert(_header_contents)
+class JavaMessage(Base):
 
-    _body_contents = body_contents(contact_me_text)
-    body = box_component_vert(_body_contents)
+    def __init__(self, user_id):
+        super(JavaMessage, self).__init__()
 
-    button_component_l = button_component_uri("Resume", "https://liff.line.me/1655584156-2Qxyk8zD")
-    button_component_r = button_component_uri("LinkedIn", "https://liff.line.me/1655584156-67gWAZ0Y")
-    button_component_bot_comb = box_component_hor([button_component_l, button_component_r])
-    line_button = ButtonComponent(
-        action=URIAction(
-            label="傳Line給En-Li",
-            uri="https://line.me/ti/p/-rT8KIvvlV"
-        ),
-        height="sm"
-    )
-    email_button = ButtonComponent(
-        action=MessageAction(
-            label="寄Email給En-Li",
-            text="請點擊以下email\nviridis959@gmail.com"
-        ),
-        height="sm"
-    )
-    footer = box_component_vert([SeparatorComponent(), line_button, email_button, button_component_bot_comb])
+        self.next_cls = JavascriptMessage
+        self.user_id = user_id
+        self.state = "java"
+        self.header_text = ["Java"]
+        self.body_text = [java_text]
+        self.footer_contents = [None]
 
-    bubble = bubble_container(header, body, footer)
 
-    return FlexSendMessage(alt_text="問題諮詢", contents=bubble)
+class JavascriptMessage(Base):
+
+    def __init__(self, user_id):
+        super(JavascriptMessage, self).__init__()
+
+        self.next_cls = ExperienceMenu
+        self.user_id = user_id
+        self.state = "javascript"
+        self.header_text = ["Javascript"]
+        self.body_text = [javascript_text]
+        self.footer_contents = [[self._set_button_component_uri("Github", "https://liff.line.me/1655584156-RwKNLwB1")]]
+
+
+class ExperienceMenu(Base):
+    def __init__(self, user_id):
+        super(ExperienceMenu, self).__init__()
+
+        self.next_cls = ProjectMessage
+        self.user_id = user_id
+        self.state = "experience"
+
+    def as_state_action(self, state):
+        bot = LineBotApi(LINE_ACCESS_TOKEN)
+        bot.link_rich_menu_to_user(self.user_id, LINE_EXPERIENCE_RICH_MENU)
+
+
+class ProjectMessage(Base):
+    def __init__(self, user_id):
+        super(ProjectMessage, self).__init__()
+
+        self.next_cls = InternMessage
+        self.user_id = user_id
+        self.state = "project"
+        self.header_text = ["畢專"]
+        self.body_text = [project_text]
+        contents = [self._set_button_component_uri("Github", "https://liff.line.me/1655584156-LKywQEZb"),
+                    self._set_button_component_uri("影片", "https://liff.line.me/1655584156-2aDQWEGP")]
+        self.footer_contents = [[BoxComponent(layout="horizontal", contents=contents)]]
+
+
+class InternMessage(Base):
+    def __init__(self, user_id):
+        super(InternMessage, self).__init__()
+
+        self.next_cls = InternWebMessage
+        self.user_id = user_id
+        self.state = "intern"
+        self.header_text = ["實習"]
+        self.body_text = [project_text]
+        contents = [self._set_button_component_state("Web", "/Web", "intern_web"),
+                    self._set_button_component_state("LineBot", "/LineBot", "intern_line_bot")]
+        self.footer_contents = [[BoxComponent(layout="horizontal", contents=contents)]]
+
+
+class InternWebMessage(Base):
+    def __init__(self, user_id):
+        super(InternWebMessage, self).__init__()
+
+        self.next_cls = InternLineBotMessage
+        self.user_id = user_id
+        self.state = "intern_web"
+
+    def as_state_action(self, state):
+        return TextSendMessage(text="https://www.youtube.com/watch?v=o_HXemQV3T4")
+
+
+class InternLineBotMessage(Base):
+    def __init__(self, user_id):
+        super(InternLineBotMessage, self).__init__()
+
+        self.next_cls = DefaultMenu
+        self.user_id = user_id
+        self.state = "intern_line_bot"
+
+    def as_state_action(self, state):
+        return TextSendMessage(text="https://www.youtube.com/watch?v=jg4wHEqxytU")
+
+
+class DefaultMenu(Base):
+    def __init__(self, user_id):
+        super(DefaultMenu, self).__init__()
+
+        self.next_cls = ContactMeMessage
+        self.user_id = user_id
+        self.state = "default"
+
+    def as_state_action(self, state):
+        bot = LineBotApi(LINE_ACCESS_TOKEN)
+        bot.link_rich_menu_to_user(self.user_id, LINE_DEFAULT_RICH_MENU)
+
+
+class ContactMeMessage(Base):
+    def __init__(self, user_id):
+        super(ContactMeMessage, self).__init__()
+
+        self.next_cls = None
+        self.user_id = user_id
+        self.state = "contact_me"
+        self.header_text = ["諮詢小幫手"]
+        self.body_text = [contact_me_text]
+        button_component_comb = BoxComponent(layout="horizontal",
+                                             contents=[self._set_button_component_uri("Github", "https://liff.line.me/1655584156-LKywQEZb"),
+                                                       self._set_button_component_uri("影片", "https://liff.line.me/1655584156-2aDQWEGP")])
+        line_button = ButtonComponent(
+            action=URIAction(
+                label="傳Line給En-Li",
+                uri="https://line.me/ti/p/-rT8KIvvlV"
+            ),
+            height="sm"
+        )
+        email_button = ButtonComponent(
+            action=MessageAction(
+                label="寄Email給En-Li",
+                text="請點擊以下email\nviridis959@gmail.com"
+            ),
+            height="sm"
+        )
+        self.footer_contents = [[BoxComponent(layout="vertical",
+                                              contents=[SeparatorComponent(), line_button, email_button, button_component_comb])]]

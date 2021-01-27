@@ -4,10 +4,10 @@ import logging
 
 import pytz
 from linebot import WebhookHandler
-from linebot.models import MessageEvent, TextMessage
+from linebot.models import MessageEvent, TextMessage, PostbackEvent
 
 from MyLineBot.settings import LINE_SECRET
-from .states import *
+from .messages import *
 
 handler = WebhookHandler(LINE_SECRET)
 bot = LineBotApi(LINE_ACCESS_TOKEN)
@@ -22,7 +22,8 @@ def handle_text_message(event):
     text = event.message.text
 
     if text[0] != "/":    # 以/為開頭是Postback回傳的訊息
-        message = contact_me()
+        contact_me_message = ContactMeMessage(None)
+        message = contact_me_message.as_state_action("contact_me")
         bot.reply_message(event.reply_token, message)
 
         logging.info(f"[{time}] A message with {bot_user_name} text : {event.message.text}")
@@ -38,7 +39,8 @@ def handle_postback_message(event):
 
     logging.info(f"[{time}] A message with {bot_user_name} state : {state}")
 
-    message = state_judge(state, bot_user_id)
+    lifestyle_menu = LifestyleMenu(bot_user_id)
+    message = lifestyle_menu.resolve(state)
 
     if message is not None:    # 若message is None，為切換選單的情況
         bot.reply_message(event.reply_token, message)
